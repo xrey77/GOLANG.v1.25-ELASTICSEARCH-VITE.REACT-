@@ -21,7 +21,7 @@ This will require your Google/Microsoft Authenticator</p>
 <p>8. Kubernetes Deployment .yaml
 <p>9. Products Report - PDF
 <p>10. Annual Sales Chart
-<p>    Bar Chart</p>
-<p>    Pie Chart</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;a. Bar Chart</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;b. Pie Chart</p>
 
 
