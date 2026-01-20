@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	utils "golang.elasticsearch/utils"
 
@@ -45,10 +46,8 @@ func ChangePassword(c *gin.Context) {
 	// 3. Prepare the update payload (Partial document update)
 	updateData := map[string]interface{}{
 		"doc": map[string]interface{}{
-			"password":    hash,
-			"isactivated": true,
-			"userpicture": "pix.png",
-			"mailtoken":   "0",
+			"password":   hash,
+			"updated_at": time.Now().UTC(),
 		},
 	}
 	payload, _ := json.Marshal(updateData)

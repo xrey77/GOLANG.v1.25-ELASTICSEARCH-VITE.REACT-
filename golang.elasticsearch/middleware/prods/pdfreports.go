@@ -26,7 +26,7 @@ import (
 
 func ProductPDFReport(c *gin.Context) {
 	cfg := config.NewBuilder().
-		WithPageNumber(props.PageNumber{ // Removed the &
+		WithPageNumber(props.PageNumber{
 			Pattern: "Page {current} of {total}",
 			Place:   props.Bottom,
 		}).
@@ -36,8 +36,6 @@ func ProductPDFReport(c *gin.Context) {
 
 	m := maroto.New(cfg)
 
-	// In Maroto v2, RegisterFooter expects Row components.
-	// We use text.NewRow for simple text footers.
 	err := m.RegisterFooter(
 		text.NewRow(10, "Prepared by: Rey Gragasin", props.Text{
 			Size:  6,

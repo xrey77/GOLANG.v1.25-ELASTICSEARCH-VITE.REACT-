@@ -78,10 +78,10 @@ func main() {
 	router.POST("/auth/signup", auth.Register)
 	router.POST("/addproduct", prods.AddProduct)
 	router.GET("/products/list/:page", prods.GetProductList)
-	router.GET("/productsearch/:page/:key", prods.ProductSearch)
+	router.GET("/products/search/:page/:key", prods.ProductSearch)
 	router.GET("/productreport", prods.ProductPDFReport)
 	router.GET("/sales/barchart", prods.GetSalesChart)
-	router.GET("/sales/linechart", prods.GetLineChart)
+	router.GET("/sales/piechart", prods.GetLineChart)
 	router.POST("/addsalesdata", prods.AddSalesData)
 
 	authGuard := router.Group("/api")
@@ -92,7 +92,7 @@ func main() {
 		authGuard.PATCH("/mfa/activate/:id", auth.MfaActivate)
 		authGuard.PATCH("/mfa/verifytotp/:id", auth.MfaVerifyotp)
 		authGuard.PATCH("/changepassword/:id", users.ChangePassword)
-		authGuard.PATCH("/profileupdate/:id", users.UpdateProfile)
+		authGuard.PATCH("/updateprofile/:id", users.UpdateProfile)
 		authGuard.PATCH("/uploadpicture/:id", users.UploadPicture)
 		authGuard.DELETE("/deleteuserbyid/:id", users.DeleteUserid)
 	}

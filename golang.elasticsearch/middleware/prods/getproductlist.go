@@ -18,7 +18,9 @@ import (
 // @Success 200 {array} []dto.Products
 // @Router /products/list/:page [get]
 func GetProductList(c *gin.Context) {
-	pageStr := c.DefaultQuery("page", "1")
+	//	pageStr := c.DefaultQuery("page", "1")
+	pageStr := c.Param("page")
+
 	pg, _ := strconv.Atoi(pageStr)
 	if pg < 1 {
 		pg = 1
@@ -34,6 +36,7 @@ func GetProductList(c *gin.Context) {
 		esClient.Search.WithFrom(offset),
 		esClient.Search.WithSize(perPage),
 		esClient.Search.WithContext(c.Request.Context()),
+		esClient.Search.WithSort("descriptions.keyword:asc"),
 	)
 	if err != nil {
 		c.JSON(500, gin.H{"error": "ES Search failed"})
@@ -53,6 +56,29 @@ func GetProductList(c *gin.Context) {
 		return
 	}
 
+	// 1. Extract the raw hits slice
+	hitsList, ok := hitsObj["hits"].([]interface{})
+	if !ok {
+		c.JSON(500, gin.H{"error": "No hits found"})
+		return
+	}
+
+	counter := offset + 1
+
+	// 2. Create a new slice to store only the _source data
+	var products []interface{}
+	for _, hit := range hitsList {
+		if h, ok := hit.(map[string]interface{}); ok {
+			if source, exists := h["_source"].(map[string]interface{}); exists {
+				// if source, exists := h["_source"]; exists {
+				source["id"] = counter
+				products = append(products, source)
+				counter++
+
+			}
+		}
+	}
+
 	totalVal := hitsObj["total"].(map[string]interface{})["value"].(float64)
 	totalPages := math.Ceil(totalVal / float64(perPage))
 
@@ -60,6 +86,7 @@ func GetProductList(c *gin.Context) {
 		"page":         pg,
 		"totpage":      totalPages,
 		"totalrecords": totalVal,
-		"products":     hitsObj["hits"],
+		"products":     products, // Now contains only the _source objects
 	})
+
 }

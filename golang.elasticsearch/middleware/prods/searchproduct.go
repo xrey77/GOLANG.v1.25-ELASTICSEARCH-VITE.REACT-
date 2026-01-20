@@ -56,7 +56,7 @@ func ProductSearch(c *gin.Context) {
 	// Encode query to JSON
 	var buf strings.Builder
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
-		c.JSON(500, gin.H{"error": "Error encoding query"})
+		c.JSON(500, gin.H{"message": "Error encoding query"})
 		return
 	}
 
@@ -68,7 +68,7 @@ func ProductSearch(c *gin.Context) {
 		esClient.Search.WithTrackTotalHits(true),
 	)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(500, gin.H{"message": err.Error()})
 		return
 	}
 	defer res.Body.Close()
@@ -76,7 +76,7 @@ func ProductSearch(c *gin.Context) {
 	// 5. Parse Response
 	var r map[string]interface{}
 	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-		c.JSON(500, gin.H{"error": "Error parsing response"})
+		c.JSON(500, gin.H{"message": "Error parsing response"})
 		return
 	}
 
@@ -96,6 +96,11 @@ func ProductSearch(c *gin.Context) {
 		json.Unmarshal(byteData, &prod)
 
 		prods = append(prods, prod)
+	}
+
+	if len(prods) == 0 {
+		c.JSON(404, gin.H{"message": "products not found."})
+		return
 	}
 
 	c.JSON(200, gin.H{

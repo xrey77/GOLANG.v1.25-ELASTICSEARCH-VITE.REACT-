@@ -61,7 +61,7 @@ func Login(c *gin.Context) {
 				"roles":       user.Roles,
 				"isactivated": user.Isactivated,
 				"isblocked":   user.Isblocked,
-				"userpic":     user.Userpicture,
+				"userpicture": user.Userpicture,
 				"qrcodeurl":   user.Qrcodeurl,
 				"token":       token,
 				"message":     "Login Successfull."})
